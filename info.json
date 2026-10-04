@@ -1,13 +1,23 @@
 {
-  "id": "plugin.com.pot-app.lingva_tts",
+  "id": "plugin.com.LKIQBoost.youdao_tts",
   "plugin_type": "tts",
-  "icon": "lingva.svg",
-  "display": "Lingva",
-  "homepage": "https://github.com/pot-app/pot-app-tts-plugin-template",
-  "needs": [{ "key": "requestPath", "display": "请求地址" }],
+  "icon": "youdao.svg",
+  "display": "有道翻译",
+  "homepage": "https://github.com/LKIQBoost/pot-app-tts-plugin-yd",
+  "needs": [
+    {
+      "key": "voiceType",
+      "display": "发音",
+      "type": "select",
+      "options": {
+        "1": "英式",
+        "2": "美式"
+      }
+    }
+  ],
   "language": {
     "zh_cn": "zh",
-    "zh_tw": "zh_HANT",
+    "zh_tw": "zh",
     "en": "en",
     "ja": "ja",
     "ko": "ko",
@@ -25,11 +35,7 @@
     "ms": "ms",
     "ar": "ar",
     "hi": "hi",
-    "mn_cy": "mn",
-    "mn_mo": "mn",
-    "km": "km",
     "nb_no": "no",
-    "nn_no": "no",
-    "fa": "fa"
+    "nn_no": "no"
   }
 }

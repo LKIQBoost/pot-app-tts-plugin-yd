@@ -1,71 +1,42 @@
-# Pot-App 语音合成插件模板仓库 (以 [Lingva](https://github.com/TheDavidDelta/lingva-translate) 为例)
+# Pot-App 有道翻译 TTS 插件
 
-### 此仓库为模板仓库，编写插件时可以直接由此仓库创建插件仓库
+为 [Pot](https://github.com/pot-app/pot-app) 提供的有道发音合成插件，使用 `pronounce/base` 接口。
 
-## 插件编写指南
+## 功能
 
-### 1. 插件仓库创建
+- 支持多种语言的单词/文本发音
+- 支持英式 / 美式发音切换
 
-- 以此仓库为模板创建一个新的仓库
-- 仓库名为 `pot-app-tts-plugin-<插件名>`，例如 `pot-app-tts-plugin-lingva_tts`
+## 使用方法
 
-### 2. 插件信息配置
+1. 下载 [Release](https://github.com/LKIQBoost/pot-app-tts-plugin-yd/releases) 中的 `plugin.com.LKIQBoost.youdao_tts.potext`
+2. 在 Pot 中依次点击 `首选项` -> `服务` -> `语音合成` -> `添加外部插件`，选择下载的 `.potext` 文件
+3. 将 `有道翻译` 加入语音合成服务即可使用
 
-编辑 `info.json` 文件，修改以下字段：
+## 接口说明
 
-- `id`：插件唯一 id，必须以`plugin`开头，例如 `plugin.com.pot-app.lingva_tts`
-- `homepage`: 插件主页，填写你的仓库地址即可，例如 `https://github.com/pot-app/pot-app-tts-plugin-template`
-- `display`: 插件显示名称，例如 `Lingva`
-- `icon`: 插件图标，例如 `lingva.svg`
-- `needs`: 插件依赖，一个数组，每个依赖为一个对象，包含以下字段：
-  - `key`: 依赖 key，对应该项依赖在配置文件中的名称，例如 `requestPath`
-  - `display`: 依赖显示名称，对应用户显示的名称，例如 `请求地址`
-  - `type`: 组件类型 `input` | `select`
-  - `options`: 选项列表(仅 select 组件需要)，例如 `{"engine_a":"Engina A","engine_b":"Engina B"}`
-- `language`: 插件支持的语言映射，将 pot 的语言代码和插件发送请求时的语言代码一一对应
+请求地址：`https://dict.youdao.com/pronounce/base`
 
-### 3. 插件编写/编译
+签名参数（`pointParam` 为参与签名的字段名，按字典序排列，末尾追加 `key`）：
 
-编辑 `main.js` 实现 `tts` 函数
+```text
+keyfrom = "webfanyi"
+keyid   = "voiceFanyiWeb"
+product = "webfanyi"
+secret  = "qCG2vdP92hOXDcKa"
 
-#### 输入参数
-```javascript
-// config: config map
-// detect: detected source language
-// setResult: function to set result text
-// utils: some tools
-//     http: tauri http module
-//     readBinaryFile: function
-//     readTextFile: function
-//     Database: tauri Database class
-//     CryptoJS: CryptoJS module
-//     cacheDir: cache dir path
-//     pluginDir: current plugin dir 
-//     osType: "Windows_NT" | "Darwin" | "Linux"
-async function tts(text, lang, options = {}) {
-  const { config, utils } = options;
-  const { http, readBinaryFile, readTextFile, Database, CryptoJS, run, cacheDir, pluginDir, osType } = utils;
-  const { fetch, Body } = http;
-}
+1. 合并默认参数（appVersion/client/mid/vendor/screen/model/imei/network/mysticTime/yduuid）
+   与 le、word、type、rate、phonetic、id
+2. 删除值为空字符串的字段
+3. 按字段名升序排序，追加 key，令 key = secret
+4. sign = md5(排序字段以 k=v 用 & 拼接的字符串)
+5. pointParam = 排序字段名 join(",")
 ```
 
-#### 返回值
+## 开发
 
-```javascript
-// 返回音频字节数组
-return audio;
+```bash
+zip plugin.com.LKIQBoost.youdao_tts.potext info.json youdao.svg main.js
 ```
 
-### 4. 打包 pot 插件
-
-1. 将`main.js`文件和`info.json`以及图标文件压缩为 zip 文件。
-
-2. 将文件重命名为`<插件id>.potext`，例如`plugin.com.pot-app.lingva_tts.potext`,即可得到 pot 需要的插件。
-
-## 自动编译打包
-
-本仓库配置了 Github Actions，可以实现推送后自动编译打包插件。
-
-每次将仓库推送到 GitHub 之后 actions 会自动运行，将打包好的插件上传到 artifact，在 actions 页面可以下载
-
-每次提交 Tag 之后，actions 会自动运行，将打包好的插件上传到 release，在 release 页面可以下载打包好的插件
+或直接推送至 GitHub，由 Actions 自动打包。
